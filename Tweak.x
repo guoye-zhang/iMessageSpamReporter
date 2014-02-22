@@ -10,16 +10,9 @@
 
 @class CKBalloonView;
 
-@protocol CKBalloonViewDelegate
-- (BOOL)balloonView:(CKBalloonView *)view canReport:(id)sender;
-@end
-
-@interface CKBalloonView
-@property(weak, nonatomic) id<CKBalloonViewDelegate> delegate;
-@end
-
-@interface CKTranscriptCollectionViewController : UIViewController <MFMailComposeViewControllerDelegate, CKBalloonViewDelegate>
-- (id<CKMessage>)messageForBalloonView:(id)view;
+@interface CKTranscriptCollectionViewController : UIViewController <MFMailComposeViewControllerDelegate>
+- (id<CKMessage>)messageForBalloonView:(CKBalloonView *)view;
+- (BOOL)shouldShowReportForMessage:(id<CKMessage>)message;
 @end
 
 %hook CKBalloonView
@@ -42,10 +35,6 @@
     [menuItems addObject:report];
     [UIMenuController sharedMenuController].menuItems = menuItems;
     [[UIMenuController sharedMenuController] update];
-}
-
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    return %orig(action, sender) || ([self.delegate balloonView:self canReport:sender] && (action == @selector(report:)));
 }
 
 %end
@@ -75,9 +64,12 @@
 }
 
 %new
-- (BOOL)balloonView:(CKBalloonView *)view canReport:(id)sender {
-    id<CKMessage> message = [self messageForBalloonView:view];
+- (BOOL)shouldShowReportForMessage:(id<CKMessage>)message {
     return message.isiMessage && !message.isOutgoing;
+}
+
+- (BOOL)balloonView:(CKBalloonView *)view canPerformAction:(SEL)action withSender:(id)sender {
+    return %orig(view, action, sender) || ((action == @selector(balloonView:report:)) && [self shouldShowReportForMessage:[self messageForBalloonView:view]]);
 }
 
 %new
