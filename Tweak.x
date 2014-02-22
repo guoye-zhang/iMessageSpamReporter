@@ -1,3 +1,6 @@
+#define REPORT_DICT \
+@"zh-Hans": @"举报"
+
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 
@@ -19,17 +22,9 @@
 
 - (void)showMenu {
     %orig;
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSArray *languageList = @[@"zh-Hans"];
-    int num = [languageList indexOfObject:language];
-    NSString *title;
-    switch (num) {
-        case 0:
-            title = @"举报";
-            break;
-        default:
-            title = @"Report";
-    }
+    NSString *title = @{REPORT_DICT}[[[NSLocale preferredLanguages] objectAtIndex:0]];
+    if (!title)
+        title = @"Report";
     UIMenuItem *report = [[UIMenuItem alloc] initWithTitle:title action:@selector(report:)];
     NSMutableArray *menuItems = [[UIMenuController sharedMenuController].menuItems mutableCopy];
     [menuItems addObject:report];
@@ -56,7 +51,7 @@
         [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd' 'HH':'mm' 'z"];
         [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
         [mc setMessageBody:[NSString stringWithFormat:@"%@\n%@", message.address, [dateFormatter stringFromDate:message.date]] isHTML:NO];
-        [mc setToRecipients:[NSArray arrayWithObject:@"imessage.spam@icloud.com"]];
+        [mc setToRecipients:@[@"imessage.spam@icloud.com"]];
         [mc addAttachmentData:screenshot mimeType:@"image/png" fileName:@"screenshot.png"];
         [self presentViewController:mc animated:YES completion:nil];
         [_center removeObserver:_token];
