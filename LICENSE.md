@@ -1,4 +1,4 @@
-Copyright (c) 2014, CC-Dog
+Copyright (c) 2014, 张国晔
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,

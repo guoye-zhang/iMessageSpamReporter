@@ -1,7 +1,6 @@
 #define REPORT_DICT \
 @"zh-Hans": @"举报"
 
-#import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 
 @protocol CKMessage
