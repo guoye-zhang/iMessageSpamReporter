@@ -12,36 +12,32 @@
 @property(readonly, nonatomic) NSString *address;
 @end
 
-@class CKBalloonView;
-
 @interface CKTranscriptCollectionViewController : UIViewController <MFMailComposeViewControllerDelegate>
-- (id<CKMessage>)messageForBalloonView:(CKBalloonView *)view;
+- (id<CKMessage>)messageForBalloonView:(id)view;
 - (BOOL)shouldShowReportForMessage:(id<CKMessage>)message;
 @end
 
-%hook CKBalloonView
-
-- (void)showMenu {
-    %orig;
-    NSString *title = @{REPORT_DICT}[[[NSLocale preferredLanguages] objectAtIndex:0]];
-    if (!title)
-        title = REPORT_DEFAULT;
-    UIMenuItem *report = [[UIMenuItem alloc] initWithTitle:title action:@selector(report:)];
-    NSMutableArray *menuItems = [[UIMenuController sharedMenuController].menuItems mutableCopy];
-    [menuItems addObject:report];
-    [UIMenuController sharedMenuController].menuItems = menuItems;
-    [[UIMenuController sharedMenuController] update];
-}
-
-%end
-
 %hook CKTranscriptCollectionViewController
 
+- (NSArray *)menuItemsForBalloonView:(id)view {
+    if ([self shouldShowReportForMessage:[self messageForBalloonView:view]]) {
+        NSMutableArray *menuItems = [%orig(view) mutableCopy];
+        NSString *title = @{REPORT_DICT}[[[NSLocale preferredLanguages] objectAtIndex:0]];
+        if (!title)
+            title = REPORT_DEFAULT;
+        UIMenuItem *report = [[UIMenuItem alloc] initWithTitle:title action:@selector(report:)];
+        [menuItems addObject:report];
+        return menuItems;
+    } else
+        return %orig(view);
+}
+
 %new
-- (void)balloonView:(CKBalloonView *)view report:(id)sender {
+- (void)balloonView:(id)view report:(id)sender {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     id _center = center;
     __block id _token = [center addObserverForName:UIMenuControllerDidHideMenuNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        [_center removeObserver:_token];
         UIImage *_UICreateScreenUIImage();
         NSData *screenshot = UIImagePNGRepresentation(_UICreateScreenUIImage());
         MFMailComposeViewController *mc = [MFMailComposeViewController new];
@@ -55,7 +51,6 @@
         [mc setToRecipients:@[@"imessage.spam@icloud.com"]];
         [mc addAttachmentData:screenshot mimeType:@"image/png" fileName:@"screenshot.png"];
         [self presentViewController:mc animated:YES completion:nil];
-        [_center removeObserver:_token];
     }];
 }
 
@@ -64,8 +59,8 @@
     return message.isiMessage && !message.isOutgoing;
 }
 
-- (BOOL)balloonView:(CKBalloonView *)view canPerformAction:(SEL)action withSender:(id)sender {
-    return %orig(view, action, sender) || ((action == @selector(balloonView:report:)) && [self shouldShowReportForMessage:[self messageForBalloonView:view]]);
+- (BOOL)balloonView:(id)view canPerformAction:(SEL)action withSender:(id)sender {
+    return %orig(view, action, sender) || (action == @selector(balloonView:report:));
 }
 
 %new
