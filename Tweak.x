@@ -1,5 +1,7 @@
 #define REPORT_DICT \
-@"zh-Hans": @"举报"
+@"zh-Hans": @"举报…"
+
+#define REPORT_DEFAULT @"Report…"
 
 #import <MessageUI/MessageUI.h>
 
@@ -23,7 +25,7 @@
     %orig;
     NSString *title = @{REPORT_DICT}[[[NSLocale preferredLanguages] objectAtIndex:0]];
     if (!title)
-        title = @"Report";
+        title = REPORT_DEFAULT;
     UIMenuItem *report = [[UIMenuItem alloc] initWithTitle:title action:@selector(report:)];
     NSMutableArray *menuItems = [[UIMenuController sharedMenuController].menuItems mutableCopy];
     [menuItems addObject:report];
