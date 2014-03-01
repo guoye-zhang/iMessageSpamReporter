@@ -73,7 +73,30 @@
         MFMailComposeViewController *mc = [MFMailComposeViewController new];
         if (mc) {
             UIImage *_UICreateScreenUIImage();
-            NSData *screenshot = UIImagePNGRepresentation(_UICreateScreenUIImage());
+            UIImage *image = _UICreateScreenUIImage();
+            UIInterfaceOrientation orientation = self.interfaceOrientation;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && orientation != UIInterfaceOrientationLandscapeLeft) {
+                CGSize size = image.size;
+                UIImageOrientation rotate;
+                CGFloat height, width;
+                if (orientation == UIInterfaceOrientationLandscapeRight) {
+                    rotate = UIImageOrientationDown;
+                    height = size.height;
+                    width = size.width;
+                } else {
+                    height = size.width;
+                    width = size.height;
+                    if (orientation == UIInterfaceOrientationPortrait)
+                        rotate = UIImageOrientationLeft;
+                    else
+                        rotate = UIImageOrientationRight;
+                }
+                UIGraphicsBeginImageContext(CGSizeMake(height, width));
+                [[UIImage imageWithCGImage:[image CGImage] scale:1.0 orientation:rotate] drawInRect:CGRectMake(0 ,0 ,height ,width)];
+                image = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+            }
+            NSData *screenshot = UIImagePNGRepresentation(image);
             mc.mailComposeDelegate = self;
             [mc setSubject:@"Spam Report"];
             id<CKMessage> message = [self messageForBalloonView:view];
