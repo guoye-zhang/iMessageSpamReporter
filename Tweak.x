@@ -70,19 +70,21 @@
     id _center = center;
     __block id _token = [center addObserverForName:UIMenuControllerDidHideMenuNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
         [_center removeObserver:_token];
-        UIImage *_UICreateScreenUIImage();
-        NSData *screenshot = UIImagePNGRepresentation(_UICreateScreenUIImage());
         MFMailComposeViewController *mc = [MFMailComposeViewController new];
-        mc.mailComposeDelegate = self;
-        [mc setSubject:@"Spam Report"];
-        id<CKMessage> message = [self messageForBalloonView:view];
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd' 'HH':'mm' 'z"];
-        [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
-        [mc setMessageBody:[NSString stringWithFormat:@"%@\n%@", message.address, [dateFormatter stringFromDate:message.date]] isHTML:NO];
-        [mc setToRecipients:@[@"imessage.spam@icloud.com"]];
-        [mc addAttachmentData:screenshot mimeType:@"image/png" fileName:@"screenshot.png"];
-        [self presentViewController:mc animated:YES completion:nil];
+        if (mc) {
+            UIImage *_UICreateScreenUIImage();
+            NSData *screenshot = UIImagePNGRepresentation(_UICreateScreenUIImage());
+            mc.mailComposeDelegate = self;
+            [mc setSubject:@"Spam Report"];
+            id<CKMessage> message = [self messageForBalloonView:view];
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd' 'HH':'mm' 'z"];
+            [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+            [mc setMessageBody:[NSString stringWithFormat:@"%@\n%@", message.address, [dateFormatter stringFromDate:message.date]] isHTML:NO];
+            [mc setToRecipients:@[@"imessage.spam@icloud.com"]];
+            [mc addAttachmentData:screenshot mimeType:@"image/png" fileName:@"screenshot.png"];
+            [self presentViewController:mc animated:YES completion:nil];
+        }
     }];
 }
 
