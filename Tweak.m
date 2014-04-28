@@ -17,10 +17,9 @@
 
 %new
 - (void)balloonView:(id)view report:(id)sender {
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    id _center = center;
-    __block id _token = [center addObserverForName:UIMenuControllerDidHideMenuNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        [_center removeObserver:_token];
+    __block id token = [[NSNotificationCenter defaultCenter] addObserverForName:UIMenuControllerDidHideMenuNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        [[NSNotificationCenter defaultCenter] removeObserver:token];
+        token = nil;
         MFMailComposeViewController *mc = [MFMailComposeViewController new];
         if (mc) {
             UIImage *_UICreateScreenUIImage();
