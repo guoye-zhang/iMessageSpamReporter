@@ -60,6 +60,7 @@
 @end
 
 @interface CKTranscriptCollectionViewController : UIViewController <MFMailComposeViewControllerDelegate>
+@property(nonatomic) UIViewController *delegate;
 - (id<CKMessage>)messageForBalloonView:(id)view; // iOS 7
 - (CKMessagePartChatItem *)messagePartForBalloonView:(id)view; // iOS 8
 - (void)balloonView:(id)view report:(id)sender; // iOS 8

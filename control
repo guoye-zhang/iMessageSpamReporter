@@ -1,7 +1,7 @@
 Package: com.ccdog.imessagespamreporter
 Name: iMessageSpamReporter
 Depends: firmware (>= 7.0), mobilesubstrate
-Version: 1.2
+Version: 1.3
 Architecture: iphoneos-arm
 Description: Report iMessage spam to Apple in Messages.app.
 Author: CC-Dog <cc941201@gmail.com>

@@ -49,6 +49,7 @@
                 IMMessage *message = [self messagePartForBalloonView:view].message;
                 date = message.time;
                 address = message.sender.ID;
+                [self.delegate setEditing:YES animated:NO];
             }
             
             mc.mailComposeDelegate = self;
@@ -70,7 +71,7 @@
 
 %new
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.delegate dismissViewControllerAnimated:YES completion:nil];
 }
 
 %end
