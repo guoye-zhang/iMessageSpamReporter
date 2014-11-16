@@ -31,10 +31,10 @@
         MFMailComposeViewController *mc = [MFMailComposeViewController new];
         if (mc) {
             UIWindow *window = self.view.window;
-            UIView *view = [[UIApplication sharedApplication] valueForKey:@"_statusBarWindow"];
-            UIGraphicsBeginImageContext(view.bounds.size);
+            UIView *statusBarWindow = [[UIApplication sharedApplication] valueForKey:@"_statusBarWindow"];
+            UIGraphicsBeginImageContext(statusBarWindow.bounds.size);
             [window drawViewHierarchyInRect:window.bounds afterScreenUpdates:YES];
-            [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+            [statusBarWindow drawViewHierarchyInRect:statusBarWindow.bounds afterScreenUpdates:YES];
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
             NSData *screenshot = UIImagePNGRepresentation(image);
