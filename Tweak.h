@@ -37,14 +37,34 @@
 
 #import <MessageUI/MessageUI.h>
 
-@protocol CKMessage
+@protocol CKMessage // iOS 7
 @property(readonly, nonatomic) BOOL isOutgoing;
 @property(readonly, nonatomic) BOOL isiMessage;
 @property(readonly, nonatomic) NSDate *date;
 @property(readonly, nonatomic) NSString *address;
 @end
 
+@interface IMHandle // iOS 8
+@property(readonly, nonatomic) NSString *ID;
+@end
+
+@interface IMMessage // iOS 8
+@property(readonly, nonatomic) BOOL __ck_isiMessage;
+@property(readonly, nonatomic) BOOL isFromMe;
+@property(readonly, nonatomic) NSDate *time;
+@property(readonly, nonatomic) IMHandle *sender;
+@end
+
+@interface CKMessagePartChatItem // iOS 8
+@property(readonly, nonatomic) IMMessage *message;
+@end
+
 @interface CKTranscriptCollectionViewController : UIViewController <MFMailComposeViewControllerDelegate>
-- (id<CKMessage>)messageForBalloonView:(id)view;
-- (BOOL)shouldShowReportForMessage:(id<CKMessage>)message;
+- (id<CKMessage>)messageForBalloonView:(id)view; // iOS 7
+- (CKMessagePartChatItem *)messagePartForBalloonView:(id)view; // iOS 8
+- (void)balloonView:(id)view report:(id)sender; // iOS 8
+@end
+
+@interface CKBalloonView // iOS 8
+@property(nonatomic) CKTranscriptCollectionViewController *delegate;
 @end
