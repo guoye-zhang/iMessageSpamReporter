@@ -5,7 +5,7 @@ include theos/makefiles/common.mk
 
 TWEAK_NAME = iMessageSpamReporter
 iMessageSpamReporter_FILES = Tweak.x
-iMessageSpamReporter_FRAMEWORKS = UIKit CoreGraphics MessageUI
+iMessageSpamReporter_FRAMEWORKS = UIKit MessageUI
 ADDITIONAL_OBJCFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
